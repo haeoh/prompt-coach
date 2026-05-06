@@ -68,23 +68,28 @@ if st.button("Analyze My Prompt"):
             if not response.has_task: missing_components.append("task")
             if not response.has_format: missing_components.append("format")
 
-        # Display feedback images on the sidebar
-        with st.sidebar:
-            if missing_components:
-                st.info("⚠️ **Missing Components Detected**")
-                st.write("Your prompt is missing:")
+        # Keep a quick summary in the sidebar
+        if missing_components:
+            with st.sidebar:
+                st.error("⚠️ **Missing Components**")
                 for component in missing_components:
                     st.write(f"- {component.capitalize()}")
-                    image_path = os.path.join("images", f"missing_{component}.PNG")
-                    if os.path.exists(image_path):
-                        st.image(image_path, use_container_width=True)
-            else:
-                st.success("🌟 **Great job! All components included.**")
-                image_path = os.path.join("images", "good.PNG")
+            
+            # Show big images in the main area
+            st.error("⚠️ **Missing Components Detected!** See details below:")
+            for component in missing_components:
+                image_path = os.path.join("images", f"missing_{component}.PNG")
                 if os.path.exists(image_path):
                     st.image(image_path, use_container_width=True)
+        else:
+            # Show the good image in the main area
+            st.success("🌟 **Great job! All components included.**")
+            image_path = os.path.join("images", "good.PNG")
+            if os.path.exists(image_path):
+                st.image(image_path, use_container_width=True)
         
-        # Display the result
+        st.divider()
+        # Display the AI's written result
         st.subheader("Coach's Feedback:")
         st.write(response.feedback)
     else:
